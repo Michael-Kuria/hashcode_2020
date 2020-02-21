@@ -1,4 +1,44 @@
 package com.shujaa.books.michael;
 
-public class Library {
+import java.util.LinkedList;
+
+public class Library implements Comparable {
+
+    public int N; // number of books
+    public int signUpDays;
+    public int booksShippedInADay;
+    public LinkedList<Book> books;
+    public int index;
+    public int difference;
+
+    public Library(int N, int signUpDays, int booksShippedInADay, int index){
+        this.N = N;
+        this.signUpDays = signUpDays;
+        this.booksShippedInADay = booksShippedInADay;
+        this.index = index;
+
+
+
+
+        books = new LinkedList<>();
+    }
+
+
+    @Override
+    public String toString(){
+        String str = index + " "+ books.size() +"\n";
+
+        for(Book bk : books){
+            str += bk.index+" ";
+        }
+
+        return str;
+
+    }
+
+
+    @Override
+    public int compareTo(Object o) {
+        return ((Integer)this.difference).compareTo(((Library)o).difference);
+    }
 }
