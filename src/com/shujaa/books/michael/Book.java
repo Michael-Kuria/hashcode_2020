@@ -12,6 +12,7 @@ public class Book implements Comparable {
 
     @Override
     public int compareTo(Object o) {
-        return ((Integer)((Book)o).score).compareTo(this.score);
+        return ((Integer)this.score).compareTo(((Book)o).score);
     }
+
 }

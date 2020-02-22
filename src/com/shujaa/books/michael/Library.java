@@ -24,6 +24,7 @@ public class Library implements Comparable {
     }
 
 
+
     @Override
     public String toString(){
         String str = index + " "+ books.size() +"\n";
@@ -39,6 +40,13 @@ public class Library implements Comparable {
 
     @Override
     public int compareTo(Object o) {
-        return ((Integer)this.difference).compareTo(((Library)o).difference);
+
+        return ((Integer)this.signUpDays).compareTo(((Library)o).signUpDays);
     }
+
+    /*@Override
+    public int compareTo(Object o) {
+
+        return ((Integer)this.books.size()).compareTo(((Library)o).books.size());
+    }*/
 }

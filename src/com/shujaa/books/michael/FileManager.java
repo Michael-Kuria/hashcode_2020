@@ -38,6 +38,7 @@ public class FileManager {
 
             for(int i = 0; i < B; i ++){
                 int score = Integer.parseInt(books[i]);
+                simulation.possibleScore += score;
                 simulation.allBooks.addLast(new Book(i,score));
             }
 
@@ -57,12 +58,14 @@ public class FileManager {
                     lib.books.addLast(simulation.allBooks.get(j));
                 }
 
-                lib.difference = lib.signUpDays + (lib.books.size() / lib.booksShippedInADay);
+                //lib.difference = lib.signUpDays + (lib.books.size() / lib.booksShippedInADay);
                 Collections.sort(lib.books);
+                Collections.reverse(lib.books);
                 simulation.libraries.addLast(lib);
                 index ++;
             }
             Collections.sort(simulation.libraries);
+            //Collections.reverse(simulation.libraries);
 
 
             return simulation;

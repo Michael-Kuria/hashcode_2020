@@ -10,6 +10,7 @@ public class Simulation {
     public int D; // number of days
 
     public int counter = 0;
+    public int possibleScore = 0;
 
     public LinkedList<Library> libraries;
     public LinkedList<Book> allBooks;
@@ -31,7 +32,41 @@ public class Simulation {
         scannedBooks = new TreeSet<>();
     }
 
-    public int whichBookToScan(Library lib, int counter){
+    public int scanBooks(Library lib){
+        int tempCounter = this.counter;
+
+        if(tempCounter >= D){
+            return -1;
+        }
+
+        int i = 0;
+        LinkedList<Book> newBooks = new LinkedList<>();
+        do{
+
+            int j = 0;
+            while(j < lib.booksShippedInADay && i < lib.books.size() ){
+                Book bk = lib.books.get(i);
+                boolean bool = scannedBooks.contains(bk.index);
+
+                if(!bool){
+                    j ++;
+                    this.score += bk.score;
+                    scannedBooks.add(bk.index);
+                    newBooks.addLast(bk);
+                }
+                i ++;
+            }
+
+            tempCounter += 1; // increament by one daybk
+
+        }while(tempCounter < D);
+
+        lib.books = newBooks;
+
+        return 1;
+    }
+
+    /*public int whichBookToScan(Library lib, int counter){
         int result = -1;
         int tempCounter = counter;
         Library tempLibrary = new Library(lib.N,lib.signUpDays,lib.booksShippedInADay,lib.index);
@@ -49,19 +84,20 @@ public class Simulation {
                     if(i < lib.books.size() ){
                         Book book = lib.books.get(i);
                         boolean isContained = scannedBooks.contains(book.index);
-                        tempLibrary.books.addLast(book);
-                        if(!isContained)
+                        if(!isContained){
                             score += book.score;
+                            scannedBooks.add(book.index);
+                            tempLibrary.books.addLast(book);
+                        }
+
                         else{
-                            count ++;
+                            *//*count ++;
                             if(count == lib.booksShippedInADay){
                                 count=0;
                                 //tempCounter -= 1;
-                            }
+                            }*//*
 
                         }
-
-                        scannedBooks.add(book.index);
 
                     }else {
                         break;
@@ -77,46 +113,71 @@ public class Simulation {
         lib = tempLibrary;
         return result;
     }
-
+*/
 
     public void solve(){
 
         int bestScore = 0;
-        for(int i = 0 ; i < 1; i ++){
-            //Collections.shuffle(libraries, new Random());
-            score = 0;
+        int i = 0;
+        do{
+            this.score = 0;
+            this.scannedBooks.clear();
+            //this.solution.clear();
+            this.counter = 0;
+
+            int afterSignUp = 0;
             for(Library lib: libraries){
-                if(counter < D){
-                    int result = whichBookToScan(lib,counter);
-                    if(result < 0){
-                        break;
-                    }else{
-                        solution.addLast(lib);
-                        counter += lib.signUpDays;
+               // if(lib.books.size() > i ){
+                    afterSignUp = counter + lib.signUpDays;
+                    if(afterSignUp < D){
+                        int result = scanBooks(lib);
+                        if(result < 0){
+                            break;
+                        }else{
+                            if(lib.books.size() > 0)
+                                solution.addLast(lib);
+                            counter = afterSignUp;
+                        }
+
+
                     }
+             // }
 
-
-                }
             }
 
+            i ++;
+
+            Collections.shuffle(this.libraries, new Random());
+
             if(score > bestScore){
+                System.out.println("Am here");
                 bestScore = score;
                 bestSolution = solution;
             }
 
-        }
+
+        }while(i < 1);
+
         solution = bestSolution;
         score = bestScore;
 
-
-
     }
 
+    public int calculateScore(){
+        int score = 0;
+
+        for(Integer i : scannedBooks){
+            score += allBooks.get(i).score;
+        }
+        return score;
+    }
 
     public static void main(String [] args){
-        String[] fileNames = {"a_example.txt","b_read_on.txt","c_incunabula.txt","d_tough_choices.txt","e_so_many_books.txt","f_libraries_of_the_world.txt"};
+        //{"a_example.txt","b_read_on.txt","c_incunabula.txt",, "e_so_many_books.txt","f_libraries_of_the_world.txt"
+        String[] fileNames = {"e_so_many_books.txt","f_libraries_of_the_world.txt"};
 
         int total = 0;
+        int possibleTotal = 0;
         for(int i = 0; i < fileNames.length; i ++ ){
             String fileName = fileNames[i];
             System.out.println("Solving ....... >>>>>>> "+ fileName);
@@ -125,12 +186,16 @@ public class Simulation {
             Simulation simulation = fileManager.readFile();
 
             simulation.solve();
+            //int score = simulation.calculateScore();
             total += simulation.score;
+            possibleTotal += simulation.possibleScore;
             System.out.println("Score "+ simulation.score);
             fileManager.write();
+            System.out.println("My counter " + simulation.counter +" total counter " + simulation.D);
         }
 
-        System.out.println("Total : "+ total);
+        System.out.println("Total : "+ total +" Possible Total " + possibleTotal);
+        System.out.println("Difference : " +(possibleTotal - total));
     }
 
 }
