@@ -10,6 +10,7 @@ public class Library implements Comparable {
     public LinkedList<Book> books;
     public int index;
     public int difference;
+    public int value = 0;
 
     public Library(int N, int signUpDays, int booksShippedInADay, int index){
         this.N = N;
@@ -44,7 +45,7 @@ public class Library implements Comparable {
         return ((Integer)this.signUpDays).compareTo(((Library)o).signUpDays);
     }
 
-    /*@Override
+   /* @Override
     public int compareTo(Object o) {
 
         return ((Integer)this.books.size()).compareTo(((Library)o).books.size());

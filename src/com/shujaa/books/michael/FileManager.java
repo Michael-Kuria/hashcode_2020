@@ -1,11 +1,7 @@
 package com.shujaa.books.michael;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.PrintWriter;
-import java.util.Collections;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 public class FileManager {
 
@@ -55,11 +51,19 @@ public class FileManager {
 
                 for(int i = 0 ; i < libBooks.length; i ++){
                     int j = Integer.parseInt(libBooks[i]);
-                    lib.books.addLast(simulation.allBooks.get(j));
+                    Book bk = simulation.allBooks.get(j);
+                    lib.books.addLast(bk);
+                    //lib.value += bk.score;
+
                 }
 
                 //lib.difference = lib.signUpDays + (lib.books.size() / lib.booksShippedInADay);
-                Collections.sort(lib.books);
+                lib.books.sort(new Comparator<Book>() {
+                    @Override
+                    public int compare(Book o1, Book o2) {
+                       return  ((Integer)o1.score).compareTo(o2.score);
+                    }
+                });
                 Collections.reverse(lib.books);
                 simulation.libraries.addLast(lib);
                 index ++;
@@ -82,7 +86,7 @@ public class FileManager {
     public void write(){
         PrintWriter writer = null;
         try{
-            writer = new PrintWriter(new File("src/com/shujaa/books/michael/solution/" + outputFile));
+            writer = new PrintWriter(new BufferedWriter(new FileWriter("src/com/shujaa/books/michael/solution/" + outputFile)));
 
             writer.println(simulation.solution.size());
 
@@ -93,7 +97,9 @@ public class FileManager {
 
         }catch (FileNotFoundException e) {
             System.out.println("File location not found");
-        }finally {
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
             writer.flush();
             writer.close();
         }

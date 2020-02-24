@@ -2,6 +2,7 @@ package com.shujaa.books.michael;
 
 import javafx.beans.property.SimpleIntegerProperty;
 
+import java.io.IOException;
 import java.util.*;
 
 public class Simulation {
@@ -13,6 +14,7 @@ public class Simulation {
     public int possibleScore = 0;
 
     public LinkedList<Library> libraries;
+    public LinkedList<Library> testLibraries;
     public LinkedList<Book> allBooks;
     public LinkedList<Library> solution;
     public Set<Integer> scannedBooks;
@@ -30,12 +32,37 @@ public class Simulation {
         allBooks = new LinkedList<>();
         solution = new LinkedList<>();
         scannedBooks = new TreeSet<>();
+        testLibraries = new LinkedList<>();
+    }
+
+    public void updateLibraries(){
+        Set<Book> books = new TreeSet<>();
+        for(Library lib : testLibraries){
+            LinkedList<Book> newBooks = new LinkedList<>();
+            for(Book bk : lib.books){
+                int size = books.size();
+                books.add(bk);
+                if(books.size() != size){
+                    newBooks.addLast(bk);
+                    lib.value += bk.score;
+                }
+            }
+            lib.books = newBooks;
+        }
+
+        testLibraries.sort(new Comparator<Library>() {
+            @Override
+            public int compare(Library o1, Library o2) {
+                return ((Integer)o1.value).compareTo(o2.value);
+            }
+        });
+        Collections.reverse(testLibraries);
     }
 
     public int scanBooks(Library lib){
         int tempCounter = this.counter;
 
-        if(tempCounter >= D){
+        if(tempCounter >= D ){
             return -1;
         }
 
@@ -62,6 +89,9 @@ public class Simulation {
         }while(tempCounter < D);
 
         lib.books = newBooks;
+        if(newBooks.size() == 0){
+            return -1;
+        }
 
         return 1;
     }
@@ -119,15 +149,19 @@ public class Simulation {
 
         int bestScore = 0;
         int i = 0;
+        testLibraries.addAll(libraries);
+        updateLibraries();
+
         do{
             this.score = 0;
             this.scannedBooks.clear();
-            //this.solution.clear();
+            this.solution = new LinkedList<>();
             this.counter = 0;
 
             int afterSignUp = 0;
-            for(Library lib: libraries){
-               // if(lib.books.size() > i ){
+            for(Library lib: testLibraries){
+               //if(lib.signUpDays < i ){
+               //System.out.println("Library Books value "+lib.value +" signUp days " + lib.signUpDays);
                     afterSignUp = counter + lib.signUpDays;
                     if(afterSignUp < D){
                         int result = scanBooks(lib);
@@ -141,22 +175,26 @@ public class Simulation {
 
 
                     }
-             // }
+             //}
 
-            }
+           }
 
             i ++;
 
+
             Collections.shuffle(this.libraries, new Random());
+            testLibraries.clear();
+            testLibraries.addAll(libraries);
+            updateLibraries();
 
             if(score > bestScore){
-                System.out.println("Am here");
+               // System.out.println("Am here");
                 bestScore = score;
                 bestSolution = solution;
             }
 
 
-        }while(i < 1);
+        }while(i < 10);
 
         solution = bestSolution;
         score = bestScore;
@@ -172,9 +210,9 @@ public class Simulation {
         return score;
     }
 
-    public static void main(String [] args){
-        //{"a_example.txt","b_read_on.txt","c_incunabula.txt",, "e_so_many_books.txt","f_libraries_of_the_world.txt"
-        String[] fileNames = {"e_so_many_books.txt","f_libraries_of_the_world.txt"};
+    public static void main(String [] args) throws IOException {
+        //{"a_example.txt","b_read_on.txt","c_incunabula.txt",, "e_so_many_books.txt","f_libraries_of_the_world.txt" "d_tough_choices.txt"
+        String[] fileNames = {"b_read_on.txt"};
 
         int total = 0;
         int possibleTotal = 0;
@@ -186,11 +224,12 @@ public class Simulation {
             Simulation simulation = fileManager.readFile();
 
             simulation.solve();
-            //int score = simulation.calculateScore();
+            int score = simulation.calculateScore();
             total += simulation.score;
             possibleTotal += simulation.possibleScore;
-            System.out.println("Score "+ simulation.score);
+            System.out.println("Score "+ simulation.score + " Calculated Score " + score);
             fileManager.write();
+            System.out.println("Solution size " + simulation.solution.size());
             System.out.println("My counter " + simulation.counter +" total counter " + simulation.D);
         }
 
