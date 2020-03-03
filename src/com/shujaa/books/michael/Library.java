@@ -17,10 +17,6 @@ public class Library implements Comparable {
         this.signUpDays = signUpDays;
         this.booksShippedInADay = booksShippedInADay;
         this.index = index;
-
-
-
-
         books = new LinkedList<>();
     }
 

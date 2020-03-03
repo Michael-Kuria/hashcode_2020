@@ -10,7 +10,7 @@ public class Simulation {
     public int L; // number of libraries
     public int D; // number of days
 
-    public int counter = 0;
+    public int counter = -1;
     public int possibleScore = 0;
 
     public LinkedList<Library> libraries;
@@ -156,7 +156,7 @@ public class Simulation {
             this.score = 0;
             this.scannedBooks.clear();
             this.solution = new LinkedList<>();
-            this.counter = 0;
+            this.counter = -1;
 
             int afterSignUp = 0;
             for(Library lib: testLibraries){
@@ -194,7 +194,7 @@ public class Simulation {
             }
 
 
-        }while(i < 10);
+        }while(i < 1);
 
         solution = bestSolution;
         score = bestScore;
@@ -212,7 +212,7 @@ public class Simulation {
 
     public static void main(String [] args) throws IOException {
         //{"a_example.txt","b_read_on.txt","c_incunabula.txt",, "e_so_many_books.txt","f_libraries_of_the_world.txt" "d_tough_choices.txt"
-        String[] fileNames = {"b_read_on.txt"};
+        String[] fileNames = {"d_tough_choices.txt","f_libraries_of_the_world.txt"};
 
         int total = 0;
         int possibleTotal = 0;
@@ -229,8 +229,6 @@ public class Simulation {
             possibleTotal += simulation.possibleScore;
             System.out.println("Score "+ simulation.score + " Calculated Score " + score);
             fileManager.write();
-            System.out.println("Solution size " + simulation.solution.size());
-            System.out.println("My counter " + simulation.counter +" total counter " + simulation.D);
         }
 
         System.out.println("Total : "+ total +" Possible Total " + possibleTotal);
