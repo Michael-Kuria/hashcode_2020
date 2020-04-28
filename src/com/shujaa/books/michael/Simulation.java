@@ -41,7 +41,7 @@ public class Simulation {
             LinkedList<Book> newBooks = new LinkedList<>();
             for(Book bk : lib.books){
                 int size = books.size();
-                books.add(bk);
+                books.add(bk); //costly
                 if(books.size() != size){
                     newBooks.addLast(bk);
                     lib.value += bk.score;

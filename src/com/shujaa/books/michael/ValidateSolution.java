@@ -111,7 +111,7 @@ public class ValidateSolution {
 
     public static void main(String[] args){
 
-        String[] fileNames = {"a_example.txt","b_read_on.txt","c_incunabula.txt", "e_so_many_books.txt", "d_tough_choices.txt","f_libraries_of_the_world.txt"};
+        String[] fileNames = {"b_read_on.txt"};
 
         int total = 0;
         for(int i = 0; i < fileNames.length; i ++){
